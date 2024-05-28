@@ -46,7 +46,7 @@ export default function ChatList() {
             {groupList.map(([date, list]) => {
                 return (
                     <div key={date}>
-                        <div className='sticky top-0 z-10 p-3 text-sm bg-gray-900 text-gray-500'>
+                        <div className='sticky top-0 z-10 p-3 text-sm bg-gray-50 text-gray-500'>
                             {date}
                         </div>
                         <ul>

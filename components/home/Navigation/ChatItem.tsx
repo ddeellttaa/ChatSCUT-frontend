@@ -22,8 +22,8 @@ export default function ChatItem({ item, selected, onSelected }: Props) {
             onClick={() => {
                 onSelected(item)
             }}
-            className={`relative group flex items-center p-3 space-x-3 cursor-pointer rounded-md hover:bg-gray-800 ${
-                selected ? "bg-gray-800 pr-[3.5em]" : ""
+            className={`relative group flex items-center p-3 space-x-3 cursor-pointer rounded-md hover:bg-gray-300 ${
+                selected ? "bg-gray-300 pr-[3.5em]" : ""
             }`}
         >
             <div>{deleting ? <PiTrashBold /> : <PiChatBold />}</div>
@@ -36,11 +36,7 @@ export default function ChatItem({ item, selected, onSelected }: Props) {
             ) : (
                 <div className='relative flex-1 whitespace-nowrap overflow-hidden'>
                     {item.title}
-                    <span
-                        className={`group-hover:from-gray-800 absolute right-0 inset-y-0 w-8 bg-gradient-to-l ${
-                            selected ? "from-gray-800" : "from-gray-900"
-                        }`}
-                    ></span>
+                  
                 </div>
             )}
 

@@ -7,17 +7,17 @@ import { LuPanelLeft } from "react-icons/lu"
 export default function Menubar() {
     const { dispatch } = useAppContext()
     return (
-        <div className='flex space-x-3'>
+        <div className='flex space-x-3 bg-gray-50'>
             <Button
                 icon={HiPlus}
-                variant='outline'
+                variant='default'
                 className='flex-1'
             >
                 新建对话
             </Button>
             <Button
                 icon={LuPanelLeft}
-                variant='outline'
+                variant='default'
                 onClick={() => {
                     dispatch({
                         type: ActionType.UPDATE,

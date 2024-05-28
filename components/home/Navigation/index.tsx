@@ -13,7 +13,7 @@ export default function Navigation() {
         <nav
             className={`${
                 displayNavigation ? "" : "hidden"
-            } flex flex-col dark relative h-full w-[260px] bg-gray-900 text-gray-300 p-2`}
+            } flex flex-col dark relative h-full w-[260px] bg-gray-50 text-gray-900 p-2`}
         >
             <Menubar />
             <ChatList />

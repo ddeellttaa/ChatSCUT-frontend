@@ -45,7 +45,7 @@ export const VideoJS = (props) => {
   }, [playerRef]);
 
   return (
-    <div data-vjs-player className={`flex flex-col relative h-full w-[260px] bg-gray-900 text-gray-300 p-2`}>
+    <div data-vjs-player className={`flex flex-col relative h-full w-[260px] bg-gray-50 text-gray-300 p-2`}>
       <div ref={videoRef} />
     </div>
   );
