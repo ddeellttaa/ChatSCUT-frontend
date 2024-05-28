@@ -1,0 +1,8 @@
+.my-icon {
+  width: 40px;  /* 调整为所需的宽度 */
+  height: 40px; /* 调整为所需的高度 */
+  background-image: url('../public/logo.png'); /* 根据你的文件路径调整 */
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+}
