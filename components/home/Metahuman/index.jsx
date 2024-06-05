@@ -1,11 +1,13 @@
 import React from 'react';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
+import { useAppContext } from '@/components/AppContext';
 
 export const VideoJS = (props) => {
   const videoRef = React.useRef(null);
   const playerRef = React.useRef(null);
   const {options, onReady} = props;
+  const {state:{user},dispatch} = useAppContext()
 
   React.useEffect(() => {
 
@@ -45,8 +47,9 @@ export const VideoJS = (props) => {
   }, [playerRef]);
 
   return (
-    <div data-vjs-player className={`flex flex-col relative h-full w-[260px] bg-gray-50 text-gray-300 p-2`}>
+    <div data-vjs-player className={`flex flex-col relative h-full w-[260px] bg-gray-50 text-blue-400 p-2`}>
       <div ref={videoRef} />
+      <div className='wb-10'>{user}</div>
     </div>
   );
 }

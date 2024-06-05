@@ -1,6 +1,7 @@
+import { useAppContext } from "@/components/AppContext"
 import { Chat } from "@/types/chat"
 import { useEffect, useState } from "react"
-import { AiOutlineEdit } from "react-icons/ai"
+import { AiFillWeiboSquare, AiOutlineEdit } from "react-icons/ai"
 import { MdCheck, MdClose, MdDeleteOutline } from "react-icons/md"
 import { PiChatBold, PiTrashBold } from "react-icons/pi"
 
@@ -13,6 +14,22 @@ type Props = {
 export default function ChatItem({ item, selected, onSelected }: Props) {
     const [editing, setEditing] = useState(false)
     const [deleting, setDeleting] = useState(false)
+    const {state:{user},dispatch} = useAppContext()
+
+    async function getChatlist(){
+        const response = await fetch("http://localhost:8080/chat/{user}",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+            }
+        )
+
+    }
+
+    
+
     useEffect(() => {
         setEditing(false)
         setDeleting(false)

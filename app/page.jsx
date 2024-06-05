@@ -4,9 +4,11 @@ import Navigation from "@/components/home/Navigation"
 import Main from "@/components/home/Main"
 import { useAppContext } from "@/components/AppContext"
 import VideoJS from "@/components/home/Metahuman"
-import {useRef,useEffect} from "react"
+import {useRef,useEffect, useState} from "react"
+import LoginOverlay from "@/components/home/Login/login"
 export default function Home() {
     // const {state:{themeMode}} = useAppContext()
+    const [isLogin,setLogin] = useState(false)
     const themeMode = "light"
     const playerRef = useRef(null);
 
@@ -34,6 +36,10 @@ export default function Home() {
         });
     };
 
+    const handleLogin = () =>{
+        setLogin(true)
+    }
+
     useEffect(() => {
         // This effect will run only once when the component mounts
         return () => {
@@ -50,6 +56,7 @@ export default function Home() {
             <Navigation />
             <Main />
             <VideoJS options={videoJsOptions} onReady={handlePlayerReady} />
+            {!isLogin && <LoginOverlay onLogin={handleLogin} />}
         </div>
     )
 }

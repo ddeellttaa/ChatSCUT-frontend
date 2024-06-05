@@ -22,7 +22,7 @@ export default function ChatList() {
         
     ])
     const {
-        state: { selectedChat },
+        state: { selectedChat,user },
         dispatch
     } = useAppContext()
 

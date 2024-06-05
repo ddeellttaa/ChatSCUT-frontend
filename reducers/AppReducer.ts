@@ -1,6 +1,7 @@
 import { Chat,Message } from "@/types/chat"
 
 export type State = {
+    user:string
     displayNavigation: boolean
     themeMode: "dark" | "light"
     currentModel: string
@@ -15,7 +16,8 @@ export enum ActionType {
     ADD_MESSAGE = "ADD_MESSAGE",
     UPDATE_MESSAGE = "UPDATE_MESSAGE",
     REMOVE_MESSAGE = "REMOVE_MESSAGE",
-    CHANGE_CARD = "CHANGE_CARD"
+    CHANGE_CARD = "CHANGE_CARD",
+    Login = "Login"
 }
 
 type MessageAction = {
@@ -34,9 +36,15 @@ type CardAction = {
     value:string
 }
 
-export type Action = UpdateAction | MessageAction | CardAction
+type LoginAction = {
+    type:ActionType.Login
+    value:string
+}
+
+export type Action = UpdateAction | MessageAction | CardAction | LoginAction
 
 export const initState: State = {
+    user:"",
     displayNavigation: true,
     themeMode: "light",
     currentModel: "gpt-3.5-turbo",
@@ -72,6 +80,10 @@ export function reducer(state: State, action: Action) {
             const m = action.value
             console.log(m)
             return {...state, m}
+        }
+        case ActionType.Login:{
+            const id = action.value
+            return {...state,user:id}
         }
         default: throw new Error()
     }
