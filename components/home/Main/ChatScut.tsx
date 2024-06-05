@@ -9,7 +9,7 @@ export default function Enter(){
     const {state:{message},dispatch} = useAppContext()
     const {publish} = useEventBusContext()
     const cards = [
-    { icon: '📚', title: '微积分上难不难' },
+    { icon: '📚', title: '给我一些微积分学习资料' },
     { icon: '💼', title: '从国际校区到五山的校巴在哪上车'},
     { icon: '🍽️', title: '推荐一道五山的美食' },
     { icon: '✈️', title: '像本地人一样游览大学城校区' }

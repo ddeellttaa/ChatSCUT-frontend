@@ -1,7 +1,7 @@
 import Button from "@/components/common/Button"
 import { MdRefresh } from "react-icons/md"
 import { PiLightningFill, PiStopBold } from "react-icons/pi"
-import { FiSend } from "react-icons/fi"
+import { FiSend, FiStar } from "react-icons/fi"
 import TextareaAutoSize from "react-textarea-autosize"
 import { useRef, useState,useEffect } from "react"
 import { v4 as uuidv4 } from "uuid"
@@ -10,6 +10,7 @@ import { useAppContext } from "@/components/AppContext"
 import { ActionType } from "@/reducers/AppReducer"
 import { useEventBusContext,EventListener } from "@/components/EventBusContext"
 import { sleep } from "@/common/util"
+import { FaMicrophone } from "react-icons/fa"
 
 
 export default function ChatInput() {
@@ -140,6 +141,7 @@ export default function ChatInput() {
             value: responseMessage.id
         })
         const reader = response.body.getReader()
+        setMessageText("")
         const decoder = new TextDecoder()
         let done = false
         let content = ""
@@ -165,7 +167,6 @@ export default function ChatInput() {
             field: "streamingId",
             value: ""
         })
-        setMessageText("")
         
     }
 
@@ -218,6 +219,11 @@ export default function ChatInput() {
                         }
                         variant='primary'
                         onClick={()=>send(messageText)}
+                    />
+                    <Button
+                        className='mx-3 !rounded-lg'
+                        icon={FaMicrophone}
+                        variant='primary'
                     />
                 </div>
                 {/* <footer className='text-center text-sm text-gray-700 dark:text-gray-300 px-4 pb-6'>
