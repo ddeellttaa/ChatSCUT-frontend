@@ -4,7 +4,7 @@ export function groupByDate(chatList: Chat[]) {
     const groupMap = new Map<string, Chat[]>()
     chatList.forEach((item) => {
         const now = new Date()
-        const updateTime = new Date(item.updateTime)
+        const updateTime = new Date(item.time)
         let key = "未知时间"
         const dayDiff = Math.floor(
             (now.getTime() - updateTime.getTime()) / (1000 * 60 * 60 * 24)
@@ -27,12 +27,12 @@ export function groupByDate(chatList: Chat[]) {
         }
     })
     groupMap.forEach((item) => {
-        item.sort((a, b) => b.updateTime - a.updateTime)
+        item.sort((a, b) => b.time - a.time)
     })
     const groupList = Array.from(groupMap).sort(([, list1], [, list2]) => {
         return (
-            list2[list2.length - 1].updateTime -
-            list1[list1.length - 1].updateTime
+            list2[list2.length - 1].time -
+            list1[list1.length - 1].time
         )
     })
     return groupList.reverse()

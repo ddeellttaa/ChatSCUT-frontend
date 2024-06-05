@@ -48,11 +48,11 @@ export default function ChatItem({ item, selected, onSelected }: Props) {
                 <input
                     autoFocus={true}
                     className='flex-1 min-w-0 bg-transparent outline-none'
-                    defaultValue={item.title}
+                    defaultValue={item.description}
                 />
             ) : (
                 <div className='relative flex-1 whitespace-nowrap overflow-hidden'>
-                    {item.title}
+                    {item.description}
                   
                 </div>
             )}

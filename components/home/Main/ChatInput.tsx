@@ -46,12 +46,12 @@ export default function ChatInput() {
     },[])
 
     useEffect(() =>{
-        if (chatIdRef.current === selectedChat?.id){
+        if (chatIdRef.current === selectedChat?.chatId){
             console.log("useeffect")
             return
         }
         else{
-            chatIdRef.current = selectedChat?.id ?? ""
+            chatIdRef.current = selectedChat?.chatId ?? ""
             // stopRef.current = true
             console.log(chatIdRef)
         }

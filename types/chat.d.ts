@@ -1,7 +1,9 @@
 export interface Chat {
-    id: string
-    title: string
-    updateTime: number
+    chatId: string
+    description: string
+    time: number
+   
+    
 }
 
 export interface Message {

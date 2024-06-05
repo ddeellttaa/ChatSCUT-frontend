@@ -5,22 +5,10 @@ import ChatItem from "./ChatItem"
 import { useAppContext } from "@/components/AppContext"
 import { ActionType } from "@/reducers/AppReducer"
 import { useEventBusContext } from "@/components/EventBusContext"
+import { METHODS } from "http"
 export default function ChatList() {
     const {subscribe, unsubscribe}  = useEventBusContext()
-    const [chatList, setChatList] = useState<Chat[]>([
-        {
-            id: "1",
-            title: "test",
-            updateTime: Date.now()
-        },
-        
-        {
-            id: "2",
-            title: "test",
-            updateTime: Date.now()
-        },
-        
-    ])
+    const [chatList, setChatList] = useState<Chat[]>([])
     const {
         state: { selectedChat,user },
         dispatch
@@ -32,14 +20,38 @@ export default function ChatList() {
 
     useEffect(()=>{
         const callback:EventListener = () =>{
-            const temp = chatList.concat({id:"3",title:"hello",updateTime:Date.now()})
+            
+            const temp = chatList.concat({chatId:"3",description:"hello",time:Date.now()})
             setChatList(temp)
+            console.log(chatList)
         }
         subscribe("fetchChatList",callback)
         return () => unsubscribe("fetchChatList",callback)
 
     },[])
 
+    useEffect(()=>{
+        getChatlist();
+        console.log(chatList)
+
+    },[user])
+
+    async function getChatlist(){
+        if(user=="") return
+        const response = await fetch(`http://localhost:8080/chat/${user}`,{
+            method:"POST",
+            headers:{
+                    "Content-Type":"application/json"
+                },
+        }
+        )
+        const responseData = await response.json();
+        const list = (responseData["data"]) as Chat[];
+        console.log(list)
+        setChatList(list)
+    
+        
+    }
 
     return (
         <div className='flex-1 mb-[48px] mt-2 flex flex-col overflow-y-auto'>
@@ -51,10 +63,10 @@ export default function ChatList() {
                         </div>
                         <ul>
                             {list.map((item) => {
-                                const selected = selectedChat?.id === item.id
+                                const selected = selectedChat?.chatId === item.chatId
                                 return (
                                     <ChatItem
-                                        key={item.id}
+                                        key={item.chatId}
                                         item={item}
                                         selected={selected}
                                         onSelected={(chat) => {
