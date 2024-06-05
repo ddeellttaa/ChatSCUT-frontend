@@ -10,70 +10,26 @@ import { FaVolumeUp } from "react-icons/fa"
 import "/styles/icon.css"
 export default function MessageList() {
     const {
-        state: { messageList, streamingId,selectedChat },
+        state: { messageList, streamingId,selectedChat,user },
         dispatch
     } = useAppContext()
     const [ifDone,setifDone] = useState(false)
     async function getData(chatid:string){
-        if (chatid === "1"){
-            const list : Message[] = [
-                {
-                    id:"1",
-                    role:"user",
-                    content:"this is if",
-                    chatid:chatid
+        const response = await fetch(`http://localhost:8080/message/${selectedChat?.chatId}`,{
+            method:"POST",
+            headers:{
+                    "Content-Type":"application/json"
                 },
+        })
+        const responseData = await response.json();
+        const list = (responseData["data"]) as Message[];
+        console.log(list)
+        dispatch({
+            type:ActionType.UPDATE,
+            field:"messageList",
+            value:list
 
-                {
-                    id:"2",
-                    role:"assistant",
-                    content:"hellomyfriend",
-                    chatid:chatid
-                }
-            ]
-            dispatch({
-                type:ActionType.UPDATE,
-                field:"messageList",
-                value: list
-            })
-            console.log("Updated message list:", list);
-
-        }
-        else if(chatid === "2"){
-                const list : Message[] = [
-                {
-                    id:"1",
-                    role:"user",
-                    content:"this is else",
-                    chatid:chatid
-                },
-
-                {
-                    id:"2",
-                    role:"assistant",
-                    content:"hellomyfriend",
-                    chatid:chatid
-                }
-            ]
-            dispatch({
-                type:ActionType.UPDATE,
-                field:"messageList",
-                value: list
-            })
-            console.log("Updated message list:", list);
-
-        }
-        else{
-            const list:Message[] =[]
-            dispatch({
-                type:ActionType.UPDATE,
-                field:"messageList",
-                value: list
-
-            })
-            console.log("Updated message list:", list);
-
-        }
+        })
 
     }
 
@@ -100,9 +56,9 @@ export default function MessageList() {
     }
 
     useEffect(()=>{
-        console.log(selectedChat?.id)
+        console.log(selectedChat?.chatId)
         if(selectedChat){
-            getData(selectedChat.id)
+            getData(selectedChat.chatId)
         }
         else{
             dispatch({
@@ -131,7 +87,7 @@ export default function MessageList() {
                                     {isUser ? "😊" : <div className="my-icon"/>}
                                 </div>
                                 <div className='flex-1'>
-                                    <Markdown>{`${message.content}${
+                                    <Markdown>{`${message.message}${
                                         message.id === streamingId ? "▍" : ""
                                     }`}</Markdown>
                                 </div>
@@ -139,7 +95,7 @@ export default function MessageList() {
                                     {!isUser && 
                                     <Button
                                         icon={FaVolumeUp}
-                                        onClick={()=>send(message.content)}
+                                        onClick={()=>send(message.message)}
                                     >
                                      
                                     </Button>}

@@ -9,8 +9,9 @@ export interface Chat {
 export interface Message {
     id: string
     role: "user" | "assistant"
-    content: string
+    message: string
     chatid:string
+    time: string
 }
 
 export interface MessageRequestBody {

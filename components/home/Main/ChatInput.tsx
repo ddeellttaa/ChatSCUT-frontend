@@ -24,6 +24,11 @@ export default function ChatInput() {
         dispatch
     } = useAppContext()
     const messageRef = useRef(message)
+    const getCurrentTimeInUTC8 = () => {
+        const date = new Date();
+        const utc8Date = new Date(date.getTime() + (8 * 60 * 60 * 1000)); // 加上8小时
+        return utc8Date.toISOString().replace('Z', '');
+        };
     const handleKeyevent = (event: {
         shiftKey: boolean, key: string 
     }) =>{
@@ -71,20 +76,37 @@ export default function ChatInput() {
 
         }
     }
+
+    async function send2sql(mes:Message){
+        const body = JSON.stringify(mes)
+        const response = await fetch("http://localhost:8080/message",{
+            method:"POST",
+            headers:{
+                    "Content-Type":"application/json"
+                },
+            body:body,
+        })
+        const responseData =await response.json()
+        if(responseData.success){
+            console.log(11111111)
+            return
+        }
+    }
+
     async function send(content:string) {
         await changeToNewChat()
         const message: Message = {
             id: uuidv4(),
             role: "user",
-            content: content,
-            chatid:chatIdRef.current
+            message: content,
+            chatid:chatIdRef.current,
+            time:getCurrentTimeInUTC8()
         }
+        send2sql(message)
         dispatch({ type: ActionType.ADD_MESSAGE, message })
-        console.log(messageList)
         const messages = messageList.concat([message])
-        console.log(message)
         doSend(messages)
-        console.log(messageList)
+  
     }
 
     async function resend() {
@@ -106,7 +128,7 @@ export default function ChatInput() {
         //const body: MessageRequestBody = { messages, model: currentModel }
         const body = JSON.stringify({
             "message":
-            messages[messages.length - 1].content
+            messages[messages.length - 1].message
         });
         
         setMessageText("")
@@ -131,8 +153,9 @@ export default function ChatInput() {
         const responseMessage: Message = {
             id: uuidv4(),
             role: "assistant",
-            content: "",
-            chatid:chatIdRef.current
+            message: "",
+            chatid:chatIdRef.current,
+            time:getCurrentTimeInUTC8()
         }
         dispatch({ type: ActionType.ADD_MESSAGE, message: responseMessage })
         dispatch({
@@ -158,10 +181,18 @@ export default function ChatInput() {
             console.log(chunk)
             dispatch({
                 type: ActionType.UPDATE_MESSAGE,
-                message: { ...responseMessage, content }
+                message: { ...responseMessage, message:content }
             })
         }
-        // console.log(messageList[messageList.length-1].content)
+        const m: Message = {
+            id: uuidv4(),
+            role: "assistant",
+            message: content,
+            chatid:chatIdRef.current,
+            time:getCurrentTimeInUTC8()
+        }
+        await send2sql(m)
+
         dispatch({
             type: ActionType.UPDATE,
             field: "streamingId",
