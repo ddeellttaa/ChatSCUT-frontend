@@ -5,7 +5,12 @@ import { useAppContext } from "@/components/AppContext";
 import { useEventBusContext } from "@/components/EventBusContext";
 import { ActionType } from "@/reducers/AppReducer";
 import { useEffect } from "react";
-export default function Enter(){
+
+
+    type EnterProps = {
+        handleOnClick: (title: string) => void;
+}
+const Enter:React.FC<EnterProps> = ({handleOnClick})=>{
     const {state:{message},dispatch} = useAppContext()
     const {publish} = useEventBusContext()
     const cards = [
@@ -14,7 +19,7 @@ export default function Enter(){
     { icon: '🍽️', title: '推荐一道五山的美食' },
     { icon: '✈️', title: '像本地人一样游览大学城校区' }
   ];
-
+    
     function handleOnclick(m:string){
 
         publish("card",m)
@@ -45,3 +50,4 @@ export default function Enter(){
         </div>
     )
 }
+export default Enter;
