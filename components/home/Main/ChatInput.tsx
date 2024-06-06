@@ -5,7 +5,7 @@ import { FiSend, FiStar } from "react-icons/fi"
 import TextareaAutoSize from "react-textarea-autosize"
 import { useRef, useState,useEffect } from "react"
 import { v4 as uuidv4 } from "uuid"
-import { Message, MessageRequestBody } from "@/types/chat"
+import { Chat, ChatDTO, Message, MessageRequestBody } from "@/types/chat"
 import { useAppContext } from "@/components/AppContext"
 import { ActionType } from "@/reducers/AppReducer"
 import { useEventBusContext,EventListener } from "@/components/EventBusContext"
@@ -19,7 +19,7 @@ export default function ChatInput() {
     const chatIdRef = useRef("")
     const {publish,subscribe,unsubscribe} = useEventBusContext()
     const {
-        state: { messageList, currentModel, streamingId,selectedChat,message},
+        state: { messageList, currentModel, streamingId,selectedChat,message,user},
         
         dispatch
     } = useAppContext()
@@ -42,8 +42,8 @@ export default function ChatInput() {
   
 
     useEffect(() => {
-        const callback:EventListener = (data) =>{
-            send(data)
+        const callback:EventListener = async (data) =>{
+            await send(data)
         }
         subscribe("card",callback)
         return () => unsubscribe("card",callback)
@@ -65,19 +65,45 @@ export default function ChatInput() {
 
     async function changeToNewChat(){
         if(!chatIdRef.current){
-            chatIdRef.current = "3"
-            publish("fetchChatList")
+            chatIdRef.current = uuidv4() 
+            const chat: ChatDTO={
+                chatid:chatIdRef.current,
+                description:"新建对话",
+                time:getCurrentTimeInUTC8(),
+                user:user
+            }
+    
+            await sendChat2sql(chat);
+            console.log("changetonewchat")
             dispatch({
                 type:ActionType.UPDATE,
                 field:"selectedChat",
-                value:{id:chatIdRef}
+                value:{chatId:chatIdRef.current}
             })
 
 
         }
     }
 
+    async function sendChat2sql(chat:ChatDTO){
+        const body = JSON.stringify(chat)
+        console.log(body)
+        const response = await fetch("http://localhost:8080/chat",{
+            method:"POST",
+            headers:{
+                    "Content-Type":"application/json"
+                },
+            body:body,
+        })
+        const responseData =await response.json()
+        if(responseData.success){
+            console.log(2222)
+            return
+        }
+    }
+
     async function send2sql(mes:Message){
+        mes.chatid = chatIdRef.current
         const body = JSON.stringify(mes)
         const response = await fetch("http://localhost:8080/message",{
             method:"POST",
@@ -102,10 +128,10 @@ export default function ChatInput() {
             chatid:chatIdRef.current,
             time:getCurrentTimeInUTC8()
         }
-        send2sql(message)
+        await send2sql(message)
         dispatch({ type: ActionType.ADD_MESSAGE, message })
         const messages = messageList.concat([message])
-        doSend(messages)
+        await doSend(messages)
   
     }
 
@@ -184,13 +210,15 @@ export default function ChatInput() {
                 message: { ...responseMessage, message:content }
             })
         }
+        
         const m: Message = {
             id: uuidv4(),
             role: "assistant",
             message: content,
-            chatid:chatIdRef.current,
+            chatid:"1",
             time:getCurrentTimeInUTC8()
         }
+        console.log(chatIdRef.current)
         await send2sql(m)
 
         dispatch({

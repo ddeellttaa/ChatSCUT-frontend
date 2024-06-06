@@ -20,9 +20,7 @@ export default function ChatList() {
 
     useEffect(()=>{
         const callback:EventListener = () =>{
-            
-            const temp = chatList.concat({chatId:"3",description:"hello",time:Date.now()})
-            setChatList(temp)
+            getChatlist(); 
             console.log(chatList)
         }
         subscribe("fetchChatList",callback)
@@ -34,7 +32,7 @@ export default function ChatList() {
         getChatlist();
         console.log(chatList)
 
-    },[user])
+    },[user,selectedChat])
 
     async function getChatlist(){
         if(user=="") return

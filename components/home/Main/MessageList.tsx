@@ -14,8 +14,10 @@ export default function MessageList() {
         dispatch
     } = useAppContext()
     const [ifDone,setifDone] = useState(false)
+    
     async function getData(chatid:string){
-        const response = await fetch(`http://localhost:8080/message/${selectedChat?.chatId}`,{
+        console.log(chatid)
+        const response = await fetch(`http://localhost:8080/message/${chatid}`,{
             method:"POST",
             headers:{
                     "Content-Type":"application/json"

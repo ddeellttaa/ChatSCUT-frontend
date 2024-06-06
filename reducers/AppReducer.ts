@@ -9,6 +9,7 @@ export type State = {
     streamingId: string
     selectedChat?:Chat
     message:string
+    chatList:Chat[]
 }
 
 export enum ActionType {
@@ -50,7 +51,8 @@ export const initState: State = {
     currentModel: "gpt-3.5-turbo",
     messageList: [],
     streamingId: "",
-    message:""
+    message:"",
+    chatList:[]
 }
 
 export function reducer(state: State, action: Action) {

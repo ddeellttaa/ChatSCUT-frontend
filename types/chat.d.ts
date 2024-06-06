@@ -1,8 +1,15 @@
 export interface Chat {
     chatId: string
     description: string
-    time: number
+    time:number
    
+    
+}
+export interface ChatDTO {
+    chatid: string
+    description: string
+    time:string 
+    user:string
     
 }
 

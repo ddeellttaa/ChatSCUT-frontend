@@ -1,4 +1,5 @@
 import { useAppContext } from "@/components/AppContext"
+import { ActionType } from "@/reducers/AppReducer"
 import { Chat } from "@/types/chat"
 import { useEffect, useState } from "react"
 import { AiFillWeiboSquare, AiOutlineEdit } from "react-icons/ai"
@@ -14,7 +15,9 @@ type Props = {
 export default function ChatItem({ item, selected, onSelected }: Props) {
     const [editing, setEditing] = useState(false)
     const [deleting, setDeleting] = useState(false)
-    const {state:{user},dispatch} = useAppContext()
+     const {state:{user,selectedChat},dispatch} = useAppContext()
+    const [description,setDescription] = useState(selectedChat?.description||"")
+
 
     async function getChatlist(){
         const response = await fetch("http://localhost:8080/chat/{user}",
@@ -28,6 +31,50 @@ export default function ChatItem({ item, selected, onSelected }: Props) {
 
     }
 
+    async function handleDelete(){
+        const response = await fetch(`http://localhost:8080/chat/${selectedChat?.chatId}`,
+            {
+                method:"DELETE",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+            }
+        )
+        const responseData = await response.json()
+        if(response.ok){
+            dispatch({
+                type:ActionType.UPDATE,
+                field:"selectedChat",
+                value:undefined
+            })
+            return
+        }
+
+    }
+
+    async function handleEdit() {
+            const body = JSON.stringify({
+                "description": description
+            });
+            const response = await fetch(`http://localhost:8080/chat/${selectedChat?.chatId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: body
+            });
+            if (response.ok) {
+                // Update the selectedChat description
+                dispatch({
+                    type: ActionType.UPDATE,
+                    field: "selectedChat",
+                    value: {
+                        ...selectedChat,
+                        description: description
+                    }
+                });
+            }
+        }
     
 
     useEffect(() => {
@@ -48,7 +95,8 @@ export default function ChatItem({ item, selected, onSelected }: Props) {
                 <input
                     autoFocus={true}
                     className='flex-1 min-w-0 bg-transparent outline-none'
-                    defaultValue={item.description}
+                    value={description}
+                    onChange={(e)=>setDescription(e.target.value)}
                 />
             ) : (
                 <div className='relative flex-1 whitespace-nowrap overflow-hidden'>
@@ -65,8 +113,10 @@ export default function ChatItem({ item, selected, onSelected }: Props) {
                                 onClick={(e) => {
                                     if (deleting) {
                                         console.log("deleted")
+                                        handleDelete()
                                     } else {
                                         console.log("edited")
+                                        handleEdit()
                                     }
                                     setDeleting(false)
                                     setEditing(false)
