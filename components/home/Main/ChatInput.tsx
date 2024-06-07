@@ -13,6 +13,7 @@ import { sleep } from "@/common/util"
 import { FaMicrophone } from "react-icons/fa"
 import Card from "./Card"
 import Enter from "./ChatScut"
+import { describe } from "node:test"
 
 
 export default function ChatInput() {
@@ -100,7 +101,7 @@ export default function ChatInput() {
             dispatch({
                 type:ActionType.UPDATE,
                 field:"selectedChat",
-                value:{chatId:chatIdRef.current}
+                value:{...selectedChat,chatId:chatIdRef.current}
             })
 
             
@@ -142,6 +143,57 @@ export default function ChatInput() {
         }
     }
 
+    async function updateChatTitle(messages: Message) {
+        const body = JSON.stringify({
+            "message":messages.message
+        })
+        let response = await fetch("http://localhost:4000", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: body
+        })
+        if (!response.ok) {
+            console.log(response.statusText)
+            return
+        }
+        if (!response.body) {
+            console.log("body error")
+            return
+        }
+        const reader = response.body.getReader()
+        const decoder = new TextDecoder()
+        let done = false
+        let title = ""
+        while (!done) {
+            const result = await reader.read()
+            done = result.done
+            const chunk = decoder.decode(result.value)
+            title += chunk
+            console.log(title)
+       
+        }
+        response = await fetch(`http://localhost:8080/chat/${chatIdRef.current}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({"description":title})
+        })
+        if (!response.ok) {
+            console.log(response.statusText)
+            return
+        }
+        dispatch({
+            type:ActionType.UPDATE,
+            field:"selectedChat",
+            value:{...selectedChat,description:title}
+        })
+   
+      
+    }
+
     async function send(content:string) {
         await changeToNewChat()
         const message: Message = {
@@ -155,7 +207,12 @@ export default function ChatInput() {
         dispatch({ type: ActionType.ADD_MESSAGE, message })
         const messages = messageList.concat([message])
         await doSend(messages)
-  
+        if (!selectedChat?.description || selectedChat.description === "新建对话") {
+            console.log(messages.length)
+            if(messages.length>2){
+            updateChatTitle(message)
+        }
+        }
     }
 
     async function resend() {
@@ -227,7 +284,7 @@ export default function ChatInput() {
             done = result.done
             const chunk = decoder.decode(result.value)
             content += chunk
-            console.log(chunk)
+           
             dispatch({
                 type: ActionType.UPDATE_MESSAGE,
                 message: { ...responseMessage, message:content }
@@ -249,6 +306,7 @@ export default function ChatInput() {
             field: "streamingId",
             value: ""
         })
+      
         
     }
 
