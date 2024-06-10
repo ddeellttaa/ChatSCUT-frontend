@@ -303,7 +303,7 @@ export default function ChatInput() {
             id: uuidv4(),
             role: "assistant",
             message: content,
-            chatid:"1",
+            chatid:chatIdRef.current,
             time:getCurrentTimeInUTC8()
         }
         console.log(chatIdRef.current)
@@ -380,15 +380,16 @@ const vsend = async ()=>{
         body: formData,
         });
 
-        const responseData = response.json()
+        const responseData = await response.json()
 
-        console.log(response.body)
-
+        
+        console.log(JSON.stringify(responseData.combined_text))
         if (response.ok) {
         console.log('Audio sent successfully');
         } else {
         console.error('Error sending audio');
-    
+
+
 }
     }
 };
