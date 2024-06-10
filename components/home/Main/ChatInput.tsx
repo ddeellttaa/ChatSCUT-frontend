@@ -240,11 +240,12 @@ export default function ChatInput() {
 
     async function doSend(messages: Message[]) {
         //const body: MessageRequestBody = { messages, model: currentModel }
+        const multi = await vsend()
         const body = JSON.stringify({
             "message":
-            messages[messages.length - 1].message
+            messages[messages.length - 1].message + multi
         });
-        
+        console.log(body)
         setMessageText("")
         const controller = new AbortController()
         const response = await fetch("http://10.48.8.76:1203", {
@@ -339,7 +340,7 @@ export default function ChatInput() {
 
 const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorderRef.current = new MediaRecorder(stream);
+    mediaRecorderRef.current = new MediaRecorder(stream,{mimeType:'audio/webm'});
     audioChunksRef.current = [];
 
     mediaRecorderRef.current.ondataavailable = (event: BlobEvent) => {
@@ -349,7 +350,7 @@ const startRecording = async () => {
     };
 
     mediaRecorderRef.current.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
         const audioUrl = URL.createObjectURL(audioBlob);
         setAudioURL(audioUrl);
         setAudioBlob(audioBlob);
@@ -370,7 +371,7 @@ const vsend = async ()=>{
     console.log(file)
     if (audioBlob && file){
         const formData = new FormData();
-        formData.append('files', audioBlob, 'recording.wav');
+        formData.append('files', audioBlob, 'recording.webm');
         formData.append('files',file);
 
         console.log(formData)
@@ -383,9 +384,10 @@ const vsend = async ()=>{
         const responseData = await response.json()
 
         
-        console.log(JSON.stringify(responseData.combined_text))
+        const multi  = JSON.stringify(responseData.combined_text)
         if (response.ok) {
-        console.log('Audio sent successfully');
+          console.log('Audio sent successfully');
+          return  multi
         } else {
         console.error('Error sending audio');
 
@@ -424,6 +426,10 @@ const vsend = async ()=>{
     }
 
  
+  function handleDeleteaudio() {
+    setAudioURL("")
+  }
+
     return (
     <>
       {!selectedChat && (
@@ -452,56 +458,69 @@ const vsend = async ()=>{
       >
         <div className="w-full max-w-4xl mx-auto flex flex-col items-center px-4 space-y-4">
           <div className="container flex flex-col">
-            <div className="top-row flex items-center">
-              {file && (
-                <div className="flex items-center space-x-4 mt-4 mb-2 p-2 border rounded-lg bg-gray-50 min-w-[300px]">
-                  <BsFiletypeJava className="w-8 h-8 text-gray-500" />
-                  <div>
-                    <p className="font-bold text-blue-500">{file.name}</p>
-                    <p className="text-sm text-gray-500">{'文档'}</p>
-                  </div>
-                   <div className="flex-grow"></div>
-                  <Button
-                      icon={MdDeleteForever}
-                      variant="primary"
-                      onClick={() => {
-                        handleDeletefile()
-                      }}
-                      className="font-medium"
-                    ></Button>
-                </div>
-              )}
-              <input id="file" type="file" onChange={handleFileChange} className="hidden" />
+            <div className="relative w-full">
+  {/* 左侧容器 */}
+  {file && (
+    <div className="absolute left-0" style={{ top: '-64px' }}>
+      <div className="flex items-center space-x-4 p-2 border rounded-lg bg-gray-50 min-w-[300px]">
+        <BsFiletypeJava className="w-8 h-8 text-gray-500" />
+        <div>
+          <p className="font-bold text-blue-500">{file.name}</p>
+          <p className="text-sm text-gray-500">文档</p>
+        </div>
+        <div className="flex-grow"></div>
+        <Button
+          icon={MdDeleteForever}
+          variant="primary"
+          onClick={handleDeletefile}
+          className="font-medium"
+        />
+      </div>
+    </div>
+  )}
 
-              <div className="flex items-center justify-center flex-grow">
-                {messageList.length !== 0 &&
-                  (streamingId !== "" ? (
-                    <Button
-                      icon={PiStopBold}
-                      variant="primary"
-                      onClick={() => {
-                        stopRef.current = true;
-                      }}
-                      className="font-medium"
-                    >
-                      停止生成
-                    </Button>
-                  ) : (
-                    <Button
-                      icon={MdRefresh}
-                      variant="primary"
-                      onClick={resend}
-                      className="font-medium"
-                    >
-                      重新生成
-                    </Button>
-                  ))}
-              </div>
+  {/* 中间按钮区域 */}
+  {messageList.length !== 0 && (
+    <div className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 flex justify-center" style={{ top: '-35px' }}>
+      {streamingId !== "" ? (
+        <Button
+          icon={PiStopBold}
+          variant="primary"
+          onClick={() => {
+            stopRef.current = true;
+          }}
+          className="font-medium"
+        >
+          停止生成
+        </Button>
+      ) : (
+        <Button
+          icon={MdRefresh}
+          variant="primary"
+          onClick={resend}
+          className="font-medium"
+        >
+          重新生成
+        </Button>
+      )}
+    </div>
+  )}
 
-              <div className="">
-                {audioURL && <audio src={audioURL} controls className="ml-auto" />}
-              </div>
-            </div>
+  {/* 右侧容器 */}
+  {audioURL && (
+    <div className="absolute right-0" style={{ top: '-60px' }}>
+      <div className="flex items-center space-x-4 p-2 border rounded-lg bg-gray-50 min-w-[300px] h-15">
+        <audio src={audioURL} controls className="h-10 w-60" />
+        <Button
+          icon={MdDeleteForever}
+          variant="primary"
+          onClick={handleDeleteaudio}
+          className="font-medium"
+        />
+      </div>
+    </div>
+  )}
+</div>
             <div className="bottom-row flex items-end w-full border border-black/10 dark:border-gray-800/50 bg-white dark:bg-gray-700 rounded-lg shadow-[0_0_15px_rgba(0,0,0,0.1)] py-4">
               <div className="mx-3 text-primary-500 ">
                   <label htmlFor="file"
@@ -524,7 +543,7 @@ const vsend = async ()=>{
                 icon={FiSend}
                 disabled={messageText.trim() === "" || streamingId !== ""}
                 variant="primary"
-                onClick={vsend}
+                onClick={(e)=>send(messageText)}
               />
               {isRecording ? (
                 <Button
