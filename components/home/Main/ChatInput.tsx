@@ -118,7 +118,7 @@ export default function ChatInput() {
     async function sendChat2sql(chat:ChatDTO){
         const body = JSON.stringify(chat)
         console.log(body)
-        const response = await fetch("http://localhost:8080/chat",{
+        const response = await fetch("http://10.40.20.16:8080/chat",{
             method:"POST",
             headers:{
                     "Content-Type":"application/json"
@@ -135,7 +135,7 @@ export default function ChatInput() {
     async function send2sql(mes:Message){
         mes.chatid = chatIdRef.current
         const body = JSON.stringify(mes)
-        const response = await fetch("http://localhost:8080/message",{
+        const response = await fetch("http://10.40.20.16:8080/message",{
             method:"POST",
             headers:{
                     "Content-Type":"application/json"
@@ -184,7 +184,7 @@ export default function ChatInput() {
         const real_title = data.result
 
 
-        response = await fetch(`http://localhost:8080/chat/${chatIdRef.current}`, {
+        response = await fetch(`http://10.40.20.16:8080/chat/${chatIdRef.current}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"

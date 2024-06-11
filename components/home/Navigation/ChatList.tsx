@@ -36,7 +36,7 @@ export default function ChatList() {
 
     async function getChatlist(){
         if(user=="") return
-        const response = await fetch(`http://localhost:8080/chat/${user}`,{
+        const response = await fetch(`http://10.40.20.16:8080/chat/${user}`,{
             method:"POST",
             headers:{
                     "Content-Type":"application/json"

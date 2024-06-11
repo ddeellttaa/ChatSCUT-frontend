@@ -17,7 +17,7 @@ export default function MessageList() {
     
     async function getData(chatid:string){
         console.log(chatid)
-        const response = await fetch(`http://localhost:8080/message/${chatid}`,{
+        const response = await fetch(`http://10.40.20.16:8080/message/${chatid}`,{
             method:"POST",
             headers:{
                     "Content-Type":"application/json"

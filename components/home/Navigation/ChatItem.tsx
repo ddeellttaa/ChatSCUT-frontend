@@ -20,7 +20,7 @@ export default function ChatItem({ item, selected, onSelected }: Props) {
 
 
     async function getChatlist(){
-        const response = await fetch("http://localhost:8080/chat/{user}",
+        const response = await fetch("http://10.40.20.16:8080/chat/{user}",
             {
                 method:"POST",
                 headers:{
@@ -32,7 +32,7 @@ export default function ChatItem({ item, selected, onSelected }: Props) {
     }
 
     async function handleDelete(){
-        const response = await fetch(`http://localhost:8080/chat/${selectedChat?.chatId}`,
+        const response = await fetch(`http://10.40.20.16:8080/chat/${selectedChat?.chatId}`,
             {
                 method:"DELETE",
                 headers:{
@@ -56,7 +56,7 @@ export default function ChatItem({ item, selected, onSelected }: Props) {
             const body = JSON.stringify({
                 "description": description
             });
-            const response = await fetch(`http://localhost:8080/chat/${selectedChat?.chatId}`, {
+            const response = await fetch(`http://10.40.20.16:8080/chat/${selectedChat?.chatId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"

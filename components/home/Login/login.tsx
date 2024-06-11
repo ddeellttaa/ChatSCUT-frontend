@@ -16,7 +16,7 @@ const LoginOverlay: React.FC<LoginOverlayProps> = ({ onLogin }) => {
             "id":username,
             "password":password,
         })
-        const response = await fetch("http://localhost:8080/login",
+        const response = await fetch("http://10.40.20.16:8080/login",
             {
                 method:"POST",
                 headers:{
@@ -41,7 +41,7 @@ const LoginOverlay: React.FC<LoginOverlayProps> = ({ onLogin }) => {
             "id":username,
             "password":password,
         })
-        const response = await fetch("http://localhost:8080/user",
+        const response = await fetch("http://10.40.20.16:8080/user",
             {
                 method:"POST",
                 headers:{
