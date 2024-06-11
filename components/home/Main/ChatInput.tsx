@@ -1,5 +1,5 @@
 import Button from "@/components/common/Button"
-import { MdDeleteForever, MdDriveFileMove, MdRefresh } from "react-icons/md"
+import { MdBuild, MdDeleteForever, MdDriveFileMove, MdRefresh } from "react-icons/md"
 import { PiLightningFill, PiStopBold } from "react-icons/pi"
 import { FiSend, FiStar } from "react-icons/fi"
 import TextareaAutoSize from "react-textarea-autosize"
@@ -18,6 +18,7 @@ import Enter from "./ChatScut"
 import { describe } from "node:test"
 import { start } from "repl"
 
+//TODO 把数据库和后端部署到linux上
 
 export default function ChatInput() {
 
@@ -58,6 +59,7 @@ export default function ChatInput() {
         if(event.key === 'Enter' && event.shiftKey){
         }
         else if(event.key === "Enter"){
+            console.log(messageText)
             send(messageText)
         }
     }
@@ -201,13 +203,16 @@ export default function ChatInput() {
    
       
     }
-
+    //TODO 看看怎么把多模态得到的输入加进数据库，应该只用加audio的数据就行
     async function send(content:string) {
         await changeToNewChat()
+        const responseData = await vsend()
+        const audio = responseData.audio
+        console.log(content+audio)
         const message: Message = {
             id: uuidv4(),
             role: "user",
-            message: content,
+            message: content + audio,
             chatid:chatIdRef.current,
             time:getCurrentTimeInUTC8()
         }
@@ -240,10 +245,13 @@ export default function ChatInput() {
 
     async function doSend(messages: Message[]) {
         //const body: MessageRequestBody = { messages, model: currentModel }
-        const multi = await vsend()
+        const messagesCopy = messages.map(message => ({ ...message }));
+        const responseData = await vsend()
+        const multi = responseData.combined_text
+        messagesCopy[messages.length-1].message += multi
         const body = JSON.stringify({
             "message":
-            messages[messages.length - 1].message + multi
+            messagesCopy
         });
         console.log(body)
         setMessageText("")
@@ -369,31 +377,36 @@ const stopRecording = () => {
 const vsend = async ()=>{
     console.log(audioBlob)
     console.log(file)
-    if (audioBlob && file){
-        const formData = new FormData();
-        formData.append('files', audioBlob, 'recording.webm');
-        formData.append('files',file);
+    
+    
+    const formData = new FormData();
+    if(!audioBlob&&!file)
+      return ""
+    if(audioBlob)
+      formData.append('files', audioBlob, 'recording.webm');
+    if(file)
+      formData.append('files',file);
 
-        console.log(formData)
-       
-        const response = await fetch('http://10.48.8.76:1202/multimodal', {
-        method: 'POST',
-        body: formData,
-        });
+    console.log(formData)
+    
+    const response = await fetch('http://10.48.8.76:1202/multimodal', {
+    method: 'POST',
+    body: formData,
+    });
 
-        const responseData = await response.json()
+    const responseData = await response.json()
 
-        
-        const multi  = JSON.stringify(responseData.combined_text)
-        if (response.ok) {
-          console.log('Audio sent successfully');
-          return  multi
-        } else {
-        console.error('Error sending audio');
+    
+
+    if (response.ok) {
+      console.log('Audio sent successfully');
+      return  responseData
+    } else {
+    console.error('Error sending audio');
 
 
 }
-    }
+    
 };
 
 
@@ -461,7 +474,7 @@ const vsend = async ()=>{
             <div className="relative w-full">
   {/* 左侧容器 */}
   {file && (
-    <div className="absolute left-0" style={{ top: '-64px' }}>
+    <div className="absolute left-0" style={{ top: '-64px',zIndex: 10 }}>
       <div className="flex items-center space-x-4 p-2 border rounded-lg bg-gray-50 min-w-[300px]">
         <BsFiletypeJava className="w-8 h-8 text-gray-500" />
         <div>
@@ -508,7 +521,7 @@ const vsend = async ()=>{
 
   {/* 右侧容器 */}
   {audioURL && (
-    <div className="absolute right-0" style={{ top: '-60px' }}>
+    <div className="absolute right-0" style={{ top: '-60px',zIndex: 10 }}>
       <div className="flex items-center space-x-4 p-2 border rounded-lg bg-gray-50 min-w-[300px] h-15">
         <audio src={audioURL} controls className="h-10 w-60" />
         <Button
@@ -530,6 +543,7 @@ const vsend = async ()=>{
                         <MdDriveFileMove className="w-10 h-10 transition-colors inline-flex items-center min-w-[38px] min-h-[38px] rounded px-3 py-1.5 bg-primary-500 text-white hover:bg-primary-600 hover:text-white shadow-sm disabled:shadow-none disabled:bg-transparent disabled:text-gray-300 dark:disabled:text-gray-600" />
                     </label>
               </div>
+                    <input id="file" type="file" onChange={handleFileChange} className="hidden" />
               <TextareaAutoSize
                 className="outline-none flex-1 max-h-64 mb-1.5 bg-transparent text-black dark:text-white resize-none border-0"
                 placeholder="给”ChatSCUT“发送消息,也可以将文件拖到这里"
@@ -541,9 +555,9 @@ const vsend = async ()=>{
               <Button
                 className="mx-3 !rounded-lg"
                 icon={FiSend}
-                disabled={messageText.trim() === "" || streamingId !== ""}
+                disabled={messageText.trim() === "" && streamingId !== ""&&!file&&!audioBlob}
                 variant="primary"
-                onClick={(e)=>send(messageText)}
+                onClick={()=>send(messageText)}
               />
               {isRecording ? (
                 <Button
