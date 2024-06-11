@@ -207,8 +207,8 @@ export default function ChatInput() {
     async function send(content:string) {
         await changeToNewChat()
         const responseData = await vsend()
-        const audio = responseData.audio
-        console.log(content+audio)
+        const audio = responseData.audio || ""
+     
         const message: Message = {
             id: uuidv4(),
             role: "user",
