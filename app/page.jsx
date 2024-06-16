@@ -55,8 +55,8 @@ export default function Home() {
         <div className={`${themeMode} h-full flex`}>
             <Navigation />
             <Main />
-            {/* <VideoJS options={videoJsOptions} onReady={handlePlayerReady} /> */}
-            {!isLogin && <LoginOverlay onLogin={handleLogin} />}
+            <VideoJS options={videoJsOptions} onReady={handlePlayerReady} />
+            {/* {!isLogin && <LoginOverlay onLogin={handleLogin} />} */}
         </div>
     )
 }

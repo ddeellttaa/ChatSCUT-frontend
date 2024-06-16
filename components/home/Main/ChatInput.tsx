@@ -451,7 +451,7 @@ const vsend = async ()=>{
             <img src="logo.png" className="h-auto w-24" alt="logo" />
             <span className="text-4xl font-sans ml-3">ChatSCUT</span>
           </div>
-          <div className="flex flex-wrap justify-around mt-40">
+          <div className="flex flex-wrap justify-around mt-20">
             {cards.map((card, index) => (
               <Card
                 key={index}
@@ -461,6 +461,7 @@ const vsend = async ()=>{
               />
             ))}
           </div>
+          <img src="final.png" alt="Avatar" className="flex"  />
         </div>
       )}
       <div

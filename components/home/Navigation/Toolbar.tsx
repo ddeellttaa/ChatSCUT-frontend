@@ -9,7 +9,7 @@ export default function Toolbar() {
         dispatch
     } = useAppContext()
     return (
-        <div className='absolute bottom-0 left-0 right-0 bg-gray-50 flex p-2 justify-between'>
+        <div className='absolute bottom-0 left-0 right-0 bg-blue-50 flex p-2 justify-between'>
             <Button
                 icon={themeMode === "dark" ? MdDarkMode : MdLightMode}
                 variant='text'

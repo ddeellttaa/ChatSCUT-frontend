@@ -80,7 +80,7 @@ export default function MessageList() {
                             key={message.id}
                             className={`${
                                 isUser
-                                    ? "bg-white dark:bg-gray-800"
+                                    ? "bg-blue-50 dark:bg-gray-800"
                                     : "bg-gray-50 dark:bg-gray-800"
                             }`}
                         >

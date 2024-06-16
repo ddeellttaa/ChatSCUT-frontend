@@ -7,7 +7,7 @@ import { LuPanelLeft } from "react-icons/lu"
 export default function Menubar() {
     const { dispatch } = useAppContext()
     return (
-        <div className='flex space-x-3 bg-gray-50'>
+        <div className='flex space-x-3 bg-blue-50'>
             <Button
                 icon={HiPlus}
                 variant='default'
