@@ -56,7 +56,7 @@ export default function Home() {
             <Navigation />
             <Main />
             <VideoJS options={videoJsOptions} onReady={handlePlayerReady} />
-            {/* {!isLogin && <LoginOverlay onLogin={handleLogin} />} */}
+            {!isLogin && <LoginOverlay onLogin={handleLogin} />}
         </div>
     )
 }

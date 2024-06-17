@@ -49,6 +49,32 @@ export const VideoJS = (props) => {
 return (
     <div data-vjs-player className="flex flex-col relative h-full w-[260px] bg-blue-50 text-blue-400 p-2">
       <div ref={videoRef} className="flex-1" />
+  <div className="max-w-3xl mx-auto">
+        <div className="text-2xl font-bold text-gray-800 ">最新新闻</div>
+        <div className="bg-white border border-gray-300 rounded-lg p-6 mb-6 shadow-md">
+            <div className="mb-6">
+                <div className="text font-bold text-gray-800 mb-1">“双向国际化”再获关键突破</div>
+                <div className="text-sm text-gray-500 mb-2">2024年6月15日</div>
+                <div className="text-gray-600">
+                    华南理工大学书记章熙春出席中新教育发展论坛，与坎特伯雷大学签署智慧医疗自动化国际合作协议，推动高水平科研与人才合作。
+                </div>
+            </div>
+            <div className="mb-6">
+                <div className="text font-bold text-gray-800 mb-1">从 “新”出发　向“质”而行　校领导讲授专题思政课</div>
+                <div className="text-sm text-gray-500 mb-2">2024年6月14日</div>
+                <div className="text-gray-600">
+                    华南理工大学党委副书记徐国正为计算机学院学生讲授思政课，强调创新驱动和高质量发展，鼓励学生勇于探索，实现梦想。
+                </div>
+            </div>
+            <div>
+                <div className="text font-bold text-gray-800 mb-1">“精彩一课” 推动党纪学习教育入心入脑　学校举行专题报告会</div>
+                <div className="text-sm text-gray-500 mb-2">2024年6月13日</div>
+                <div className="text-gray-600">
+                    北京师范大学王炳林教授在华南理工大学讲授党纪专题党课，解读习近平关于党的建设思想及《中国共产党纪律处分条例》，促进党员干部深入学习、知纪守纪。
+                </div>
+            </div>
+        </div>
+    </div>
       <div className="mt-auto p-2">
         {/* <div className="mb-2">
           <a href="https://www.scut.edu.cn/new/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
