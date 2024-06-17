@@ -50,7 +50,7 @@ return (
     <div data-vjs-player className="flex flex-col relative h-full w-[260px] bg-blue-50 text-blue-400 p-2">
       <div ref={videoRef} className="flex-1" />
   <div className="max-w-3xl mx-auto">
-        <div className="text-2xl font-bold text-gray-800 ">最新新闻</div>
+        <div className="text-2xl font-bold text-gray-800 text-center ">最新新闻</div>
         <div className="bg-white border border-gray-300 rounded-lg p-6 mb-6 shadow-md">
             <div className="mb-6">
                 <div className="text font-bold text-gray-800 mb-1">“双向国际化”再获关键突破</div>
